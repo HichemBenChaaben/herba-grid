@@ -1,0 +1,39 @@
+//= Breakpoints
+$max-width: 1020px
+
+// Desktop
+$desktop-min-width: $max-width
+
+// Tablet
+$tablet-max-width: $desktop-min-width - 1
+$tablet-min-width: 760px
+
+// Notebook
+$notebook-max-width: $tablet-min-width - 1
+$notebook-min-width: 480px
+
+// Mobile
+$mobile-max-width: $tablet-min-width - 1
+$mobile-min-width: 0
+
+// Breakpoint takes mobile - tablet or desktop otherwise
+// it create a media query with minimum in px or the passed argument
+=breakpoint($viewport)
+    @if $viewport == desktop
+        @media (min-width: $desktop-min-width)
+            @content
+    @else if $viewport == tablet
+        @media (min-width: $tablet-min-width)
+            @content
+    @else if $viewport == tablet-only
+        @media (min-width: $tablet-min-width) and (max-width: $tablet-max-width)
+            @content
+    @else if $viewport == notebook
+        @media (min-width: $notebook-min-width) and (max-width: $mobile-max-width)
+            @content
+    @else if $viewport == mobile
+        @media (max-width: $mobile-max-width)
+            @content
+    @else
+        @media (min-width: $viewport)
+            @content

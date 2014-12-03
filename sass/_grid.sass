@@ -1,0 +1,119 @@
+// ----------------------------
+// Module name convention (u-r & u-c)
+$module-row: "#{$ns}row"
+$module-column: "#{$ns}col"
+$module-offset: "#{$ns}c--offset"
+
+// ----------------------------
+// Grid Styling Variables
+// px or ems or rems or what ever you want
+$grid-size: 12
+$grid-base-unit: px
+$gutter-mobile: "10#{$grid-base-unit}"
+$gutter-notebook: "10#{$grid-base-unit}"
+$gutter-tablet: "10#{$grid-base-unit}"
+$gutter-desktop: "15#{$grid-base-unit}"
+
+// ----------------------------
+// Grid helper mixin
+=grid-column-draw($current, $total)
+    width: percentage($current / $total)
+
+// Grid offset
+=grid-margin-draw($current, $total)
+    margin-#{$leading}: percentage($current / $total)
+
+// ----------------------------
+// Setting the grid styling
+// We don't need styles other than a clearfix
+.#{$module-row}
+    &:after, &:before
+        clear: both
+        content: ""
+        display: table
+    // Reset the column gutters with negative
+    // margins on nested rows.
+    .#{$module-row}
+        margin-left: -$gutter-mobile
+        margin-right: -$gutter-mobile
+
+        +breakpoint(notebook)
+            margin-left: -$gutter-notebook
+            margin-right: -$gutter-notebook
+
+        +breakpoint(tablet)
+            margin-left: -$gutter-tablet
+            margin-right: -$gutter-tablet
+
+        +breakpoint(desktop)
+            margin-left: -$gutter-desktop
+            margin-right: -$gutter-desktop
+
+.#{$module-column}
+    float: #{$leading}
+    padding-left: $gutter-mobile
+    padding-right: $gutter-mobile
+
+    +breakpoint(notebook)
+        padding-left: $gutter-notebook
+        padding-right: $gutter-notebook
+
+    +breakpoint(tablet)
+        padding-left: $gutter-tablet
+        padding-right: $gutter-tablet
+
+    +breakpoint(desktop)
+        padding-left: $gutter-desktop
+        padding-right: $gutter-desktop
+
+// Generate 12 column grid
+@for $i from 1 through $grid-size
+    .#{$module-column}
+        &--#{$i}o#{$grid-size}
+            +grid-column-draw($i, $grid-size)
+
+@for $i from 1 through $grid-size
+    .#{$module-column}
+        &--t#{$i}o#{$grid-size}
+            +breakpoint(tablet)
+                +grid-column-draw($i, $grid-size)
+
+@for $i from 1 through $grid-size
+    .#{$module-column}
+        &--d#{$i}o#{$grid-size}
+            +breakpoint(desktop)
+                +grid-column-draw($i, $grid-size)
+    // if the support flag is set
+    @if $ie8-supported
+        // Create a desktop experience for ie8
+        .ie8
+            .#{$module-column}--d#{$i}o#{$grid-size}
+                +grid-column-draw($i, $grid-size)
+
+// maximum offsets allowed in 12 grid size is 11 with a size 1/12 otherwise
+// content will be pushed out
+@for $i from 1 through $grid-size - 1
+    .#{$module-offset}-#{$i}
+        +grid-margin-draw($i, $grid-size)
+
+// maximum offsets allowed in 12 grid size is 11 with a size 1/12 otherwise
+// content will be pushed out
+@for $i from 1 through $grid-size - 1
+    .#{$module-offset}-t-#{$i}
+        +breakpoint(tablet)
+            +grid-margin-draw($i, $grid-size)
+
+// maximum offsets allowed in 12 grid size is 11 with a size 1/12 otherwise
+// the conetent will be pushed out
+@for $i from 1 through $grid-size - 1
+    .#{$module-offset}-d-#{$i}
+        +breakpoint(desktop)
+            +grid-margin-draw($i, $grid-size)
+
+    // if the support flag is set
+    @if $ie8-supported
+        // Create a flag for supporting ie8 or ie9 or whatever
+        // Create a desktop experience for ie8
+        .ie8
+            .#{$module-offset}-d-#{$i}
+                +grid-margin-draw($i, $grid-size)
